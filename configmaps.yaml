@@ -1,0 +1,19 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: cm
+    namespace: default
+data:
+    foo: bar
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: special-config
+    namespace: default
+data:
+    special.ip: '{{ .Pod.PodIP }}'
+    special.labels: '{{ .Pod.Labels }}'
+    special.name: '{{ (.ConfigMap "cm").foo }}'
+---

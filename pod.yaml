@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: dapi-test-pod
+ labels:
+   label1: label1value
+   label2: label2value
+spec:
+ containers:
+   - name: test-container
+     image: gcr.io/google_containers/busybox
+     command: [ "/bin/sh", "-c", "env"]
+     env:
+     - name: LOCAL_IP
+       valueFrom:
+         configMapKeyRef:
+           name: special-config
+           key: special.ip
+     - name: LOCAL_LABELS
+       valueFrom:
+         configMapKeyRef:
+           name: special-config
+           key: special.labels
+     - name: LOCAL_NAME
+       valueFrom:
+         configMapKeyRef:
+           name: special-config
+           key: special.name
+     volumeMounts:
+     - name: config-volume
+       mountPath: /etc/config
+ volumes:
+   - name: config-volume
+     configMap:
+       name: special-config
+ restartPolicy: Never
