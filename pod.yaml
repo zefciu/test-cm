@@ -9,7 +9,7 @@ spec:
  containers:
    - name: test-container
      image: gcr.io/google_containers/busybox
-     command: [ "/bin/sh", "-c", "env"]
+     command: [ "/bin/sh", "-c", "cat /etc/config/*"]
      env:
      - name: LOCAL_IP
        valueFrom:
@@ -31,6 +31,15 @@ spec:
        mountPath: /etc/config
  volumes:
    - name: config-volume
-     configMap:
-       name: special-config
+     downwardAPI:
+         items:
+             - path: "cfg"
+               configMapRef: "special-config"
+               template: |
+                   TEMPLATED FILE...
+                   {{ special.labels }}
+                   {{ special.name }}
+             - path: "labels"
+               fieldRef: 
+                   fieldPath: "metadata.labels"
  restartPolicy: Never
