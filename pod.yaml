@@ -9,26 +9,28 @@ spec:
  containers:
    - name: test-container
      image: gcr.io/google_containers/busybox
-     command: [ "/bin/sh", "-c", "cat /etc/config/*"]
+     command: [ "/bin/sh", "-c", "sleep 3 && echo -- Rendered file -- && cat /etc/config/cfg && echo -- ConfigMap files cat-ed -- && cat /etc/config2/*"]
      env:
      - name: LOCAL_IP
        valueFrom:
          configMapKeyRef:
            name: special-config
-           key: special.ip
+           key: specialip
      - name: LOCAL_LABELS
        valueFrom:
          configMapKeyRef:
            name: special-config
-           key: special.labels
+           key: speciallabels
      - name: LOCAL_NAME
        valueFrom:
          configMapKeyRef:
            name: special-config
-           key: special.name
+           key: specialname
      volumeMounts:
      - name: config-volume
        mountPath: /etc/config
+     - name: config-volume2
+       mountPath: /etc/config2
  volumes:
    - name: config-volume
      downwardAPI:
@@ -37,9 +39,12 @@ spec:
                configMapRef: "special-config"
                template: |
                    TEMPLATED FILE...
-                   {{ special.labels }}
-                   {{ special.name }}
+                   {{ .speciallabels }}
+                   {{ .specialname }}
              - path: "labels"
                fieldRef: 
                    fieldPath: "metadata.labels"
+   - name: config-volume2
+     configMap:
+         name: special-config
  restartPolicy: Never

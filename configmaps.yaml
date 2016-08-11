@@ -13,7 +13,7 @@ metadata:
     name: special-config
     namespace: default
 data:
-    special.ip: '{{ .Pod.PodIP }}'
-    special.labels: '{{ .Pod.Labels }}'
-    special.name: '{{ (.ConfigMap "cm").foo }}'
+    specialip: '{{ .Pod.PodIP }}'
+    speciallabels: '{{ .Pod.Labels }}'
+    specialname: '{{ (.ConfigMap "cm").foo }}'
 ---
